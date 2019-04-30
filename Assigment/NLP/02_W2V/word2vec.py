@@ -20,9 +20,7 @@ def skipgram(centerWord, contextWord, inputMatrix, outputMatrix):
     v, d = inputMatrix.size()   # v is numwords==len(words), d is ... dimension dzdz
     
     x = torch.zeros(v, 1)   # input
-    y = torch.zeros(v, 1)   # output(answer)
     x[centerWord] += 1
-    y[contextWord] += 1
 
     h = torch.mm(inputMatrix.t(), x)    # h = (d, 1)
 
