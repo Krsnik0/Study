@@ -1,5 +1,5 @@
-// 
-//
+// https://www.acmicpc.net/problem/1451
+// Written by JSH, Krsnik
 
 #include <iostream>
 #include <string>
@@ -13,23 +13,20 @@
 using namespace std;
 using ll = long long int;
 
-bool cmp(vector<int> v1, vector<int> v2) {
-	return v1[1] < v2[1];
-}
-
 int main() {
 	cin.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
 	int n, m;
 	cin >> n >> m;
-
+	char a;
 	vector<vector<int>> v(n);
 	for (auto& item : v)
 		item.resize(m);
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < m; ++j) {
-			cin >> v[i][j];
+			cin >> a;
+			v[i][j] = a - '0';
 		}
 	}
 	ll ans = 0, tmp = 0;
@@ -139,7 +136,61 @@ int main() {
 			}
 		}
 	}
-
+	//case5 =
+	if (n > 2) {
+		for (int i = 0; i < n - 2; ++i) {
+			sum1 = 0;
+			for (int h = 0; h < m; ++h) {
+				for (int w = 0; w < i + 1; ++w) {
+					sum1 += v[w][h];
+				}
+			}
+			for (int j = i + 1; j < n - 1; ++j) {
+				sum2 = 0;
+				for (int h = 0; h < m; ++h) {
+					for (int w = i + 1; w < j + 1; ++w) {
+						sum2 += v[w][h];
+					}
+				}
+				sum3 = 0;
+				for (int k = j + 1; k < n; ++k) {
+					for (int h = 0; h < m; ++h) {
+						sum3 += v[k][h];						
+					}
+					tmp = (ll)sum1 * (ll)sum2 * (ll)sum3;
+					ans = ans > tmp ? ans : tmp;
+				}
+			}
+		}
+	}
+	//case6 ||
+	if (m > 2) {
+		for (int i = 0; i < m - 2; ++i) {
+			sum1 = 0;
+			for (int h = 0; h < n; ++h) {
+				for (int w = 0; w < i + 1; ++w) {
+					sum1 += v[h][w];
+				}
+			}
+			for (int j = i + 1; j < m - 1; ++j) {
+				sum2 = 0;
+				for (int h = 0; h < n; ++h) {
+					for (int w = i + 1; w < j + 1; ++w) {
+						sum2 += v[h][w];
+					}
+				}
+				sum3 = 0;
+				for (int k = j + 1; k < m; ++k) {
+					for (int h = 0; h < n; ++h) {
+						sum3 += v[h][k];
+						
+					}
+				}
+				tmp = (ll)sum1 * (ll)sum2 * (ll)sum3;
+				ans = ans > tmp ? ans : tmp;
+			}
+		}
+	}
 
 	cout << ans << '\n';
 
