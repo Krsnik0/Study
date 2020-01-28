@@ -1,29 +1,50 @@
-//
+// https://www.acmicpc.net/problem/1525
+// Written by JSH, Krsnik
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <deque>
+#include <unordered_map>
 #include <algorithm>
 #include <utility>
 using namespace std;
 
+constexpr int exp(int i) {
+	int result = 1;
+	while (i--) result *= 10;
+	return result;
+}
+
+constexpr int facto(int n) {
+	int result = 1;
+	while (n) result *= n--;
+	return result;
+}
+
+constexpr int exp9[9] = {
+	exp(8),exp(7),exp(6),exp(5),exp(4),exp(3),exp(2),exp(1),exp(0)
+};
+
+constexpr int fact9[] = {
+	facto(1), facto(2), facto(3), facto(4), facto(5), facto(6), facto(7), facto(8), facto(9)
+};
+
+int factToNum(int n) {
+	int i = 0, result = 0, tmp;
+	while (i < 9) {
+		tmp = n % 10;
+		n /= 10;
+		result += tmp * fact9[i++];
+	}
+	return result;
+}
+
 int changeDigit(int n, int from, int to) {
 	// 012345678
-	vector<int> v(9, 0);
-	v[8] = n % 10;
-	v[7] = (n / 10) % 10;
-	v[6] = (n / 100) % 10;
-	v[5] = (n / 1000) % 10;
-	v[4] = (n / 10000) % 10;
-	v[3] = (n / 100000) % 10;
-	v[2] = (n / 1000000) % 10;
-	v[1] = (n / 10000000) % 10;
-	v[0] = n / 100000000;
-	int tmp = v[from];
-	v[from] = v[to];
-	v[to] = tmp;
-	return v[8] + 10 * (v[7] + 10 * (v[6] + 10 * (v[5] + 10 * (v[4] + 10 * (v[3] + 10 * (v[2] + 10 * (v[1] + 10 * v[0])))))));
+	int f = (n / exp9[from]) % 10;
+	int t = (n / exp9[to]) % 10;
+	return n + exp9[from] * (t - f) + exp9[to] * (f - t);
 }
 
 int main() {
@@ -39,62 +60,65 @@ int main() {
 		}
 	}
 	vector<pair<int, int>> mov = { {1,0},{-1,0},{0,1},{0,-1} };
-	vector<bool> isVisit(1000000000, false);
-	isVisit[input] = true;
-	deque<pair<int, int>> q;
-	q.push_back({ input, 0 });
+	deque<int> q;
+	vector<int> isVisit(3628800, -1);
+	isVisit[factToNum(input)] = 0;
+	q.push_back(input);
 	string str;
-	pair<int, int> now;
-	int idx, x, y, dx, dy, next;
+	int idx, x, y, dx, dy, next, now, cnt, nextt;
 	while (!q.empty()) {
 		now = q.front();
-		if (q.front().first == 123456789) {
-			cout << q.front().second << '\n';
+		cnt = isVisit[factToNum(now)];
+		if (now == 123456789) {
+			cout << cnt << '\n';
 			return 0;
 		}
-		str = to_string(now.first);
+		str = to_string(now);
 		idx = str.find('9');
 		x = idx / 3;
 		y = idx % 3;
 		dx = x + mov[0].first;
 		dy = y + mov[0].second;
 		if (0 <= dx && dx <= 2 && 0 <= dy && dy <= 2) {
-			next = changeDigit(now.first, x * 3 + y, dx * 3 + dy);
-			if (!isVisit[next]) {
-				q.push_back({ next, now.second + 1 });
-				isVisit[next] = true;
+			next = changeDigit(now, x * 3 + y, dx * 3 + dy);
+			nextt = factToNum(next);
+			if (isVisit[nextt] == -1) {
+				q.push_back(next);
+				isVisit[nextt] = cnt + 1;
 			}
 		}
 		dx = x + mov[1].first;
 		dy = y + mov[1].second;
 		if (0 <= dx && dx <= 2 && 0 <= dy && dy <= 2) {
-			next = changeDigit(now.first, x * 3 + y, dx * 3 + dy);
-			if (!isVisit[next]) {
-				q.push_back({ next, now.second + 1 });
-				isVisit[next] = true;
+			next = changeDigit(now, x * 3 + y, dx * 3 + dy);
+			nextt = factToNum(next);
+			if (isVisit[nextt] == -1) {
+				q.push_back(next);
+				isVisit[nextt] = cnt + 1;
 			}
 		}
 		dx = x + mov[2].first;
 		dy = y + mov[2].second;
 		if (0 <= dx && dx <= 2 && 0 <= dy && dy <= 2) {
-			next = changeDigit(now.first, x * 3 + y, dx * 3 + dy);
-			if (!isVisit[next]) {
-				q.push_back({ next, now.second + 1 });
-				isVisit[next] = true;
+			next = changeDigit(now, x * 3 + y, dx * 3 + dy);
+			nextt = factToNum(next);
+			if (isVisit[nextt] == -1) {
+				q.push_back(next);
+				isVisit[nextt] = cnt + 1;
 			}
 		}
 		dx = x + mov[3].first;
 		dy = y + mov[3].second;
 		if (0 <= dx && dx <= 2 && 0 <= dy && dy <= 2) {
-			next = changeDigit(now.first, x * 3 + y, dx * 3 + dy);
-			if (!isVisit[next]) {
-				q.push_back({ next, now.second + 1 });
-				isVisit[next] = true;
+			next = changeDigit(now, x * 3 + y, dx * 3 + dy);
+			nextt = factToNum(next);
+			if (isVisit[nextt] == -1) {
+				q.push_back(next);
+				isVisit[nextt] = cnt + 1;
 			}
 		}
 		q.pop_front();
 	}
-	if (!isVisit[123456789])
-		cout << "-1\n";
+	cout << "-1\n";
 	return 0;
 }
